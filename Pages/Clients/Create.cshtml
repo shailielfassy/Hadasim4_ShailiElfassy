@@ -1,0 +1,148 @@
+﻿@page
+@model Hadasim4._0Ex1.Pages.Clients.CreateModel
+@{
+    ViewData["Title"] = "Create Client";
+}
+
+<br>
+<h2>New Client</h2>
+
+<form method="post">
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Name</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="fullName" value="@Model.clientInformation.fullName" @(ViewData["NameErrorStyle"] ?? "") />
+            <span class="text-danger">@ViewData["NameErrorMessage"]</span>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Id</label>
+        <div class="col-sm-6">
+            <input type="number" class="form-control" name="id" value="@Model.clientInformation.id" style="@ViewData["IdErrorStyle"]" />
+            <span class="text-danger">@ViewData["IdErrorMessage"]</span>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">City</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="city" value="@Model.clientInformation.city" style="@ViewData["CityErrorStyle"]" />
+            <span class="text-danger">@ViewData["CityErrorMessage"]</span>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Street</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="street" value="@Model.clientInformation.street" style="@ViewData["StreetErrorStyle"]" />
+            <span class="text-danger">@ViewData["StreetErrorMessage"]</span>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Date of birth</label>
+        <div class="col-sm-6">
+            <input type="date" class="form-control" name="dateOfBirth" value="@Model.clientInformation.dateOfBirth" style="@ViewData["DateOfBirthErrorStyle"]" />
+            <span class="text-danger">@ViewData["DateOfBirthErrorMessage"]</span>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Phone</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="phone" value="@Model.clientInformation.phone" style="@ViewData["PhoneErrorStyle"]" />
+            <span class="text-danger">@ViewData["PhoneErrorMessage"]</span>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Mobile phone</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="mobilePhone" value="@Model.clientInformation.mobilePhone" style="@ViewData["MobilePhoneErrorStyle"]" />
+            <span class="text-danger">@ViewData["MobilePhoneErrorMessage"]</span>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Vaccination 1 date</label>
+        <div class="col-sm-6">
+            <input type="date" class="form-control" name="vaccination1Date" value="@Model.covidInformation.vaccination1Date" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Vaccination 1 manufacturer </label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="vaccination1Manufacturer" value="@Model.covidInformation.vaccination1Manufacturer" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Vaccination 2 date</label>
+        <div class="col-sm-6">
+            <input type="date" class="form-control" name="vaccination2Date" value="@Model.covidInformation.vaccination2Date" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Vaccination 2 manufacturer </label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="vaccination2Manufacturer" value="@Model.covidInformation.vaccination2Manufacturer" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Vaccination 3 date</label>
+        <div class="col-sm-6">
+            <input type="date" class="form-control" name="vaccination3Date" value="@Model.covidInformation.vaccination3Date" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Vaccination 3 manufacturer </label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="vaccination3Manufacturer" value="@Model.covidInformation.vaccination3Manufacturer" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Vaccination 4 date</label>
+        <div class="col-sm-6">
+            <input type="date" class="form-control" name="vaccination4Date" value="@Model.covidInformation.vaccination4Date" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Vaccination 4 manufacturer </label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="vaccination4Manufacturer" value="@Model.covidInformation.vaccination4Manufacturer" />
+        </div>
+    </div>
+
+
+
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Positive test date</label>
+        <div class="col-sm-6">
+            <input type="date" class="form-control" name="positiveTestDate" value="@Model.covidInformation.positiveTestDate" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Recovery date</label>
+        <div class="col-sm-6">
+            <input type="date" class="form-control" name="recoveryDate" value="@Model.covidInformation.recoveryDate" style="@ViewData["RecoveryDateErrorStyle"]" />
+            <span class="text-danger">@ViewData["RecoveryDateErrorMessage"]</span>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="offset-sm-3 col-sm-3 d-grid">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+        <div class="offset-sm-3 d-grid">
+            <a class="btn btn-outline-primary" href="/Clients/ClientList" role="button">Cancel</a>
+        </div>
+    </div>
+
+
+        @if (Model.successMessage.Length > 0)
+        {
+            <div class="row mb-3">
+                <div class="row sm-9">
+                    <div class='alert alert-warning alert-dismissible fade show' role='alert'>
+                        <strong>@Model.successMessage</strong>
+                        <button type='button' class='button-close' data-bs-dismiss='alert' aria-label='Close'></button>
+                    </div>
+                </div>
+            </div>
+        }
+
+</form>

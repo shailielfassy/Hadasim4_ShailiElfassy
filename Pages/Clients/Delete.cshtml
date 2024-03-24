@@ -1,0 +1,40 @@
+﻿@page
+@using MySql.Data.MySqlClient;
+
+@{
+    try
+    {
+        // Read the id of the client that we need to delete
+        string id = Request.Query["id"];
+
+        string connectionString = "server=localhost;uid=root;password=Jtmmaethel1;database=CoronaDatabase;sslmode=none";
+
+        using (MySqlConnection connection = new MySqlConnection(connectionString))
+        {
+            connection.Open();
+
+            // Delete from Covid table first
+            string deleteCovidSql = "DELETE FROM Covid WHERE client_id = @id";
+            using (MySqlCommand deleteCovidCommand = new MySqlCommand(deleteCovidSql, connection))
+            {
+                deleteCovidCommand.Parameters.AddWithValue("@id", id);
+                deleteCovidCommand.ExecuteNonQuery();
+            }
+
+            // Then delete from Clients table
+            string deleteClientSql = "DELETE FROM Clients WHERE id = @id";
+            using (MySqlCommand deleteClientCommand = new MySqlCommand(deleteClientSql, connection))
+            {
+                deleteClientCommand.Parameters.AddWithValue("@id", id);
+                deleteClientCommand.ExecuteNonQuery();
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+
+    }
+
+    // Redirect the user to the list of clients
+    Response.Redirect("/Clients/ClientList");
+}

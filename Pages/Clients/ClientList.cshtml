@@ -1,0 +1,44 @@
+﻿@page
+@model Hadasim4._0Ex1.Pages.Clients.IndexModel
+@{
+     ViewData["Title"] = "Clients";
+}
+
+<br>
+<h2> List of Clients </h2>
+<a class='btn btn-primary btn-sm' href='/Clients/Create'>New Client</a>
+
+<div style="text-align: center; font-size:smaller; ">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Id</th>
+                <th>City</th>
+                <th>Street</th>
+                <th>Birth date</th>
+                <th>Phone</th>
+                <th>Mobile phone</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.listClients)
+            {
+                <tr>
+                    <td>@item.fullName</td>
+                    <td>@item.id</td>
+                    <td>@item.city</td>
+                    <td>@item.street</td>
+                    <td>@item.dateOfBirth</td>
+                    <td>@item.phone</td>
+                    <td>@item.mobilePhone</td>
+                    <td>
+                        <a class="btn btn-primary btn-sm" href="/clients/Edit?id=@item.id">View</a>
+                        <a class="btn btn-danger btn-sm" href="/Clients/Delete?id=@item.id">Delete</a>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</div>
