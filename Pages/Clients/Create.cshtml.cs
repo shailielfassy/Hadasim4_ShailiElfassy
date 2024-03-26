@@ -31,6 +31,16 @@ namespace Hadasim4._0Ex1.Pages.Clients
             ViewData[$"{fieldName}ErrorMessage"] = message;
         }
 
+        //check order of vaccinations
+        private bool IsValidVaccinationOrder(string date1, string date2)
+        {
+            if (string.IsNullOrWhiteSpace(date1) || string.IsNullOrWhiteSpace(date2))
+                return true;
+            if (DateTime.TryParse(date1, out DateTime dt1) && DateTime.TryParse(date2, out DateTime dt2))
+                return dt2 > dt1;
+            return false;
+        }
+
         //executed when we press the submit button
         public void OnPost()
         {
@@ -143,6 +153,30 @@ namespace Hadasim4._0Ex1.Pages.Clients
                     errorMessage = "Invalid date format for positive test date or recovery date.";
                     return;
                 }
+            }
+            // Validate vaccination dates
+            if (!IsValidVaccinationOrder(covidInformation.vaccination1Date, covidInformation.vaccination2Date))
+            {
+                errorMessage = "Second vaccination date must be after the first vaccination date.";
+                SetErrorStyle("vaccination2Date");
+                SetErrorMessage("vaccination2Date", errorMessage);
+                return;
+            }
+
+            if (!IsValidVaccinationOrder(covidInformation.vaccination2Date, covidInformation.vaccination3Date))
+            {
+                errorMessage = "Third vaccination date must be after the second vaccination date.";
+                SetErrorStyle("vaccination3Date");
+                SetErrorMessage("vaccination3Date", errorMessage);
+                return;
+            }
+
+            if (!IsValidVaccinationOrder(covidInformation.vaccination3Date, covidInformation.vaccination4Date))
+            {
+                errorMessage = "Fourth vaccination date must be after the third vaccination date.";
+                SetErrorStyle("vaccination4Date");
+                SetErrorMessage("vaccination4Date", errorMessage);
+                return;
             }
 
             //save the new client into the database

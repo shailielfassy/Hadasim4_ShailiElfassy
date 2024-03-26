@@ -83,4 +83,10 @@ namespace Hadasim4._0Ex1.Pages.Clients
         public string positiveTestDate;
         public string recoveryDate;
     }
+
+    public class Image
+    {
+        public string client_id;
+        public string img;
+    }
 }

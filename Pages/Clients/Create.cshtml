@@ -73,7 +73,8 @@
     <div class="row mb-3">
         <label class="col-sm-3 col-form-label">Vaccination 2 date</label>
         <div class="col-sm-6">
-            <input type="date" class="form-control" name="vaccination2Date" value="@Model.covidInformation.vaccination2Date" />
+            <input type="date" class="form-control" name="vaccination2Date" value="@Model.covidInformation.vaccination2Date" style="@ViewData["Vaccination2DateErrorStyle"]" />
+            <span class="text-danger">@ViewData["Vaccination2DateErrorMessage"]</span>
         </div>
     </div>
     <div class="row mb-3">
@@ -85,7 +86,8 @@
     <div class="row mb-3">
         <label class="col-sm-3 col-form-label">Vaccination 3 date</label>
         <div class="col-sm-6">
-            <input type="date" class="form-control" name="vaccination3Date" value="@Model.covidInformation.vaccination3Date" />
+            <input type="date" class="form-control" name="vaccination3Date" value="@Model.covidInformation.vaccination3Date" style="@ViewData["Vvaccination3DateErrorStyle"]" />
+            <span class="text-danger">@ViewData["Vaccination3DateErrorMessage"]</span>
         </div>
     </div>
     <div class="row mb-3">
@@ -97,7 +99,8 @@
     <div class="row mb-3">
         <label class="col-sm-3 col-form-label">Vaccination 4 date</label>
         <div class="col-sm-6">
-            <input type="date" class="form-control" name="vaccination4Date" value="@Model.covidInformation.vaccination4Date" />
+            <input type="date" class="form-control" name="vaccination4Date" value="@Model.covidInformation.vaccination4Date" style="@ViewData["Vaccination4DateErrorStyle"]" />
+            <span class="text-danger">@ViewData["Vaccination4DateErrorMessage"]</span>
         </div>
     </div>
     <div class="row mb-3">
@@ -133,16 +136,16 @@
     </div>
 
 
-        @if (Model.successMessage.Length > 0)
-        {
-            <div class="row mb-3">
-                <div class="row sm-9">
-                    <div class='alert alert-warning alert-dismissible fade show' role='alert'>
-                        <strong>@Model.successMessage</strong>
-                        <button type='button' class='button-close' data-bs-dismiss='alert' aria-label='Close'></button>
-                    </div>
+    @if (Model.successMessage.Length > 0)
+    {
+        <div class="row mb-3">
+            <div class="row sm-9">
+                <div class='alert alert-warning alert-dismissible fade show' role='alert'>
+                    <strong>@Model.successMessage</strong>
+                    <button type='button' class='button-close' data-bs-dismiss='alert' aria-label='Close'></button>
                 </div>
             </div>
-        }
+        </div>
+    }
 
 </form>

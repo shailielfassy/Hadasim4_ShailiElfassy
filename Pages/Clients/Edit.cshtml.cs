@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MySql.Data.MySqlClient;
@@ -14,6 +17,10 @@ namespace Hadasim4._0Ex1.Pages.Clients
         public CovidInformation covidInformation = new CovidInformation();
         public string errorMessage = "";
         public string successMessage = "";
+        string base64Image = "";
+        public Image image = new Image();
+
+        public IFormFile UploadedImage { get; set; }
 
         //set a red border for the input field with an error
         private void SetErrorStyle(string fieldName)
@@ -29,7 +36,6 @@ namespace Hadasim4._0Ex1.Pages.Clients
         public void OnGet()
         {
             string id = Request.Query["id"];
-
             try
             {
                 string connectionString = "server=localhost;uid=root;password=Jtmmaethel1;database=CoronaDatabase;sslmode=none";
@@ -38,8 +44,9 @@ namespace Hadasim4._0Ex1.Pages.Clients
                 {
                     connection.Open();
                     string sql = "SELECT * FROM clients " +
-                        "JOIN covid ON clients.id = covid.client_id " +
-                        "WHERE clients.id = @id;";
+                    "JOIN covid ON clients.id = covid.client_id " +
+                    "LEFT JOIN images ON clients.id = images.client_id " +
+                    "WHERE clients.id = @id;";
 
                     using (MySqlCommand command = new MySqlCommand(sql, connection))
                     {
@@ -56,6 +63,7 @@ namespace Hadasim4._0Ex1.Pages.Clients
                                 clientInformation.dateOfBirth = reader.GetDateTime("DateOfBirth").ToString("yyyy-MM-dd");
                                 clientInformation.phone = reader.IsDBNull(reader.GetOrdinal("Phone")) ? null : reader.GetString("Phone");
                                 clientInformation.mobilePhone = reader.GetString("MobilePhone");
+                                
                                 covidInformation.client_id = " " + reader.GetUInt32("id");
                                 covidInformation.vaccination1Date = reader.IsDBNull(reader.GetOrdinal("Vaccination1Date")) ? null : reader.GetDateTime("Vaccination1Date").ToString("yyyy-MM-dd");
                                 covidInformation.vaccination1Manufacturer = reader.IsDBNull(reader.GetOrdinal("Vaccination1Manufacturer")) ? null : reader.GetString("Vaccination1Manufacturer");
@@ -67,7 +75,10 @@ namespace Hadasim4._0Ex1.Pages.Clients
                                 covidInformation.vaccination4Manufacturer = reader.IsDBNull(reader.GetOrdinal("Vaccination4Manufacturer")) ? null : reader.GetString("Vaccination4Manufacturer");
                                 covidInformation.positiveTestDate = reader.IsDBNull(reader.GetOrdinal("PositiveTestDate")) ? null : reader.GetDateTime("PositiveTestDate").ToString("yyyy-MM-dd");
                                 covidInformation.recoveryDate = reader.IsDBNull(reader.GetOrdinal("RecoveryDate")) ? null : reader.GetDateTime("RecoveryDate").ToString("yyyy-MM-dd");
-                               
+
+                                image.client_id = " " + reader.GetUInt32("id");
+                                byte[] temp = (byte[])reader["ImageData"];
+                                image.img = Encoding.UTF8.GetString(temp);
                             }
                         }
                     }
@@ -79,8 +90,18 @@ namespace Hadasim4._0Ex1.Pages.Clients
             }
         }
 
+        //check order of vaccinations
+        private bool IsValidVaccinationOrder(string date1, string date2)
+        {
+            if (string.IsNullOrWhiteSpace(date1) || string.IsNullOrWhiteSpace(date2))
+                return true;
+            if (DateTime.TryParse(date1, out DateTime dt1) && DateTime.TryParse(date2, out DateTime dt2))
+                return dt2 > dt1;
+            return false;
+        }
+
         //when we submit
-        public void OnPost()
+        public async Task<IActionResult> OnPost()
         {
             clientInformation.fullName = Request.Form["fullName"];
             clientInformation.id = Request.Form["id"];
@@ -102,13 +123,29 @@ namespace Hadasim4._0Ex1.Pages.Clients
             covidInformation.positiveTestDate = Request.Form["positiveTestDate"];
             covidInformation.recoveryDate = Request.Form["recoveryDate"];
 
+            image.client_id= Request.Form["id"];
+            UploadedImage = Request.Form.Files["profilePicture"];
+
+            // Check if an image was uploaded
+            if (UploadedImage != null)
+            {
+                byte[] imageDataBytes;
+                using (var memoryStream = new MemoryStream())
+                {
+                    await UploadedImage.CopyToAsync(memoryStream);
+                    imageDataBytes = memoryStream.ToArray();
+                    base64Image = Convert.ToBase64String(imageDataBytes);
+                }
+                image.img = base64Image;
+            }
+
             //check inputs
             if (string.IsNullOrWhiteSpace(clientInformation.fullName))
             {
                 errorMessage = "Name is required";
                 SetErrorStyle("Name");
                 SetErrorMessage("Name", errorMessage);
-                return;
+                return Page();
             }
 
             if (string.IsNullOrWhiteSpace(clientInformation.city))
@@ -116,7 +153,7 @@ namespace Hadasim4._0Ex1.Pages.Clients
                 errorMessage = "City is required";
                 SetErrorStyle("City");
                 SetErrorMessage("City", errorMessage);
-                return;
+                return Page();
             }
 
             if (string.IsNullOrWhiteSpace(clientInformation.street))
@@ -124,7 +161,7 @@ namespace Hadasim4._0Ex1.Pages.Clients
                 errorMessage = "Street is required";
                 SetErrorStyle("Street");
                 SetErrorMessage("Street", errorMessage);
-                return;
+                return Page();
             }
 
             if (string.IsNullOrWhiteSpace(clientInformation.dateOfBirth))
@@ -132,7 +169,7 @@ namespace Hadasim4._0Ex1.Pages.Clients
                 errorMessage = "Date of birth is required";
                 SetErrorStyle("DateOfBirth");
                 SetErrorMessage("DateOfBirth", errorMessage);
-                return;
+                return Page();
             }
 
             if (!string.IsNullOrEmpty(clientInformation.phone) && clientInformation.phone.Length != 7)
@@ -140,7 +177,7 @@ namespace Hadasim4._0Ex1.Pages.Clients
                 errorMessage = "Phone must be exactly 7 digits long";
                 SetErrorStyle("phone");
                 SetErrorMessage("phone", errorMessage);
-                return;
+                return Page();
             }
 
             if (string.IsNullOrWhiteSpace(clientInformation.mobilePhone))
@@ -148,15 +185,16 @@ namespace Hadasim4._0Ex1.Pages.Clients
                 errorMessage = "Mobile phone is required";
                 SetErrorStyle("MobilePhone");
                 SetErrorMessage("MobilePhone", errorMessage);
-                return;
+                return Page();
             }
             else if (clientInformation.mobilePhone.Length != 10)
             {
                 errorMessage = "Mobile phone must be exactly 10 digits long";
                 SetErrorStyle("mobilePhone");
                 SetErrorMessage("mobilePhone", errorMessage);
-                return;
+                return Page();
             }
+
             if (!string.IsNullOrWhiteSpace(covidInformation.positiveTestDate) && !string.IsNullOrWhiteSpace(covidInformation.recoveryDate))
             {
                 DateTime positiveTest, recovery;
@@ -167,14 +205,39 @@ namespace Hadasim4._0Ex1.Pages.Clients
                         errorMessage = "Recovery date must be after positive test date.";
                         SetErrorStyle("recoveryDate");
                         SetErrorMessage("recoveryDate", errorMessage);
-                        return;
+                        return Page();
                     }
                 }
                 else
                 {
                     errorMessage = "Invalid date format for positive test date or recovery date.";
-                    return;
+                    return Page();
                 }
+            }
+
+            // Validate vaccination dates
+            if (!IsValidVaccinationOrder(covidInformation.vaccination1Date, covidInformation.vaccination2Date))
+            {
+                errorMessage = "Second vaccination date must be after the first vaccination date.";
+                SetErrorStyle("vaccination2Date");
+                SetErrorMessage("vaccination2Date", errorMessage);
+                return Page();
+            }
+
+            if (!IsValidVaccinationOrder(covidInformation.vaccination2Date, covidInformation.vaccination3Date))
+            {
+                errorMessage = "Third vaccination date must be after the second vaccination date.";
+                SetErrorStyle("vaccination3Date");
+                SetErrorMessage("vaccination3Date", errorMessage);
+                return Page();
+            }
+
+            if (!IsValidVaccinationOrder(covidInformation.vaccination3Date, covidInformation.vaccination4Date))
+            {
+                errorMessage = "Fourth vaccination date must be after the third vaccination date.";
+                SetErrorStyle("vaccination4Date");
+                SetErrorMessage("vaccination4Date", errorMessage);
+                return Page();
             }
 
             try
@@ -240,17 +303,50 @@ namespace Hadasim4._0Ex1.Pages.Clients
                         updateCovidCommand.ExecuteNonQuery();
                     }
 
+                    // Insert/Update image if loaded
+                    if (UploadedImage != null && UploadedImage.Length > 0)
+                    {
+                        // Check if an image record already exists for the client
+                        string checkImageSql = "SELECT COUNT(*) FROM Images WHERE Client_Id = @clientId";
+                        using (MySqlCommand checkImageCommand = new MySqlCommand(checkImageSql, connection))
+                        {
+                            checkImageCommand.Parameters.AddWithValue("@clientId", clientInformation.id);
+                            int imageCount = Convert.ToInt32(checkImageCommand.ExecuteScalar());
 
+                            if (imageCount > 0)
+                            {
+                                // If an image record exists, update the existing record with the new image data
+                                string updateImageSql = "UPDATE Images SET ImageData = @imageData WHERE Client_Id = @clientId";
+                                using (MySqlCommand updateImageCommand = new MySqlCommand(updateImageSql, connection))
+                                {
+                                    updateImageCommand.Parameters.AddWithValue("@clientId", clientInformation.id);
+                                    updateImageCommand.Parameters.AddWithValue("@imageData", base64Image);
+                                    updateImageCommand.ExecuteNonQuery();
+                                }
+                            }
+                            else
+                            {
+                                // If no image record exists, insert a new record
+                                string insertImageSql = "INSERT INTO Images (Client_Id, ImageData) VALUES (@clientId, @imageData)";
+                                using (MySqlCommand insertImageCommand = new MySqlCommand(insertImageSql, connection))
+                                {
+                                    insertImageCommand.Parameters.AddWithValue("@clientId", clientInformation.id);
+                                    insertImageCommand.Parameters.AddWithValue("@imageData", base64Image);
+                                    insertImageCommand.ExecuteNonQuery();
+                                }
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception ex)
             {
                 errorMessage = ex.Message; // Handle other types of exceptions
-                return;
+                return Page();
             }
 
             //redirect the user to the list of clients
-            Response.Redirect("/Clients/ClientList");
+            return RedirectToPage("/Clients/ClientList");
         }
     }
 }

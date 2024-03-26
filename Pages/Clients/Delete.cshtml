@@ -13,6 +13,14 @@
         {
             connection.Open();
 
+            // Delete from Images table
+            string deleteimageSql = "DELETE FROM Images WHERE client_id = @id";
+            using (MySqlCommand deleteClientCommand = new MySqlCommand(deleteimageSql, connection))
+            {
+                deleteClientCommand.Parameters.AddWithValue("@id", id);
+                deleteClientCommand.ExecuteNonQuery();
+            }
+
             // Delete from Covid table first
             string deleteCovidSql = "DELETE FROM Covid WHERE client_id = @id";
             using (MySqlCommand deleteCovidCommand = new MySqlCommand(deleteCovidSql, connection))
@@ -21,13 +29,14 @@
                 deleteCovidCommand.ExecuteNonQuery();
             }
 
-            // Then delete from Clients table
+            // Delete from Clients table
             string deleteClientSql = "DELETE FROM Clients WHERE id = @id";
             using (MySqlCommand deleteClientCommand = new MySqlCommand(deleteClientSql, connection))
             {
                 deleteClientCommand.Parameters.AddWithValue("@id", id);
                 deleteClientCommand.ExecuteNonQuery();
             }
+
         }
     }
     catch (Exception ex)
