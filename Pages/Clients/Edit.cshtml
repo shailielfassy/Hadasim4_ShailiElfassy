@@ -5,21 +5,23 @@
 }
 
 <br>
+
 <style>
+    /* CSS code to define styles for a profile picture */
     .profile-section {
         display: flex;
         justify-content: center;
         align-items: center;
-        margin-bottom: 20px; /* Adjust as needed */
+        margin-bottom: 20px;
     }
 
     .profile-picture {
         width: 120px;
         height: 120px;
         border-radius: 50%;
-        background-color: #ccc;  
+        background-color: #ccc;
         overflow: hidden;
-        margin-right: 20px; /* Adjust as needed */
+        margin-right: 20px;
         cursor: pointer;
     }
 
@@ -28,6 +30,7 @@
             height: 100%;
             object-fit: cover;
         }
+
     /* Hide the input file */
     input[type="file"] {
         display: none;
@@ -46,18 +49,13 @@
             <!-- Display uploaded image or placeholder image -->
             @if (!string.IsNullOrEmpty(Model.image.img))
             {
-                <img src="data:image/jpeg;base64,@Model.image.img">
-            }
-            else
-            {
-                <img src="placeholder.jpg">
+                <img src="data:image/jpeg;base64,@Model.image.img" >
             }
         </label>
         <div>
             <input type="file" name="profilePicture" id="profile-picture-upload" accept="image/*">
         </div>
     </div>
-
 
     <div class="row mb-3">
         <label class="col-sm-3 col-form-label">Name</label>

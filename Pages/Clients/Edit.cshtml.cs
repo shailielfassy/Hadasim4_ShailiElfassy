@@ -33,6 +33,7 @@ namespace Hadasim4._0Ex1.Pages.Clients
         {
             ViewData[$"{fieldName}ErrorMessage"] = message;
         }
+
         public void OnGet()
         {
             string id = Request.Query["id"];
@@ -42,7 +43,7 @@ namespace Hadasim4._0Ex1.Pages.Clients
 
                 using (MySqlConnection connection = new MySqlConnection(connectionString))
                 {
-                    connection.Open();
+                    connection.Open(); //show information of all the tables
                     string sql = "SELECT * FROM clients " +
                     "JOIN covid ON clients.id = covid.client_id " +
                     "LEFT JOIN images ON clients.id = images.client_id " +

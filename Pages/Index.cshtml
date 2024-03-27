@@ -4,7 +4,67 @@
     ViewData["Title"] = "Home page";
 }
 
-    <div class="text-center">
-        <h1 class="display-4">Welcome</h1>
-        <h2>Corona management system</h2>
+<div class="text-center">
+    <h1>Welcome</h1>
+    <h2>Corona database management</h2>
+</div>
+
+<div style="display: flex; justify-content: center; align-items: center; height: 60vh;">
+    <canvas id="myChart1" style="width: 55vw; height: 80%;"></canvas>
+    <div style="margin-left: 20px;">
+        <h3>Unvaccinated members:</h3>
+        <h3>@Model.ClientsWithNoVaccinations/@Model.SumClients</h3> 
     </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    var ctx = document.getElementById('myChart1').getContext('2d');
+    var dates = [];
+    var activePatients = [];
+
+     //Loop through the ActivePatientsData list to get the dates and activePatients data of the graph
+    @foreach (var item in Model.ActivePatientsData)
+    {
+        <text>dates.push('@item.DateColumn');</text>
+        <text>activePatients.push(@item.ActivePatients);</text>
+    }
+
+    var myChart = new Chart(ctx, {
+        type: 'line', //bar is also nice
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Active Patients',
+                data: activePatients,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1,
+                fill: true
+            }]
+        },
+        options: {
+            scales: {
+                x: { //display dates
+                    stacked: true,
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    }
+                },
+                y: { //display number of positive person
+                    beginAtZero: true,
+                    stacked: true,
+                    title: {
+                        display: true,
+                        text: 'Number of Positive Cases'
+                    },
+                    ticks: {
+                        stepSize: 1,
+                    }
+                }
+            }
+        }
+    });
+</script>
