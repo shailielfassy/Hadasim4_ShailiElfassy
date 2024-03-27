@@ -338,6 +338,20 @@ namespace Hadasim4._0Ex1.Pages.Clients
                             }
                         }
                     }
+
+                    string s = Request.Form["removeImageFlag"];
+                    if (s =="true") //if remove button was pressed then remove the image
+                    {
+                        string id = Request.Query["id"];
+
+                        string deleteimageSql = "DELETE FROM images WHERE client_id = @id;";
+
+                        using (MySqlCommand deleteClientCommand = new MySqlCommand(deleteimageSql, connection))
+                        {
+                            deleteClientCommand.Parameters.AddWithValue("@id", id);
+                            deleteClientCommand.ExecuteNonQuery();
+                        }
+                    }
                 }
             }
             catch (Exception ex)

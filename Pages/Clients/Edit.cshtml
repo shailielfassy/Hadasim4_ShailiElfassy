@@ -3,9 +3,7 @@
 @{
     ViewData["Title"] = "Update " + @Model.clientInformation.id;
 }
-
 <br>
-
 <style>
     /* CSS code to define styles for a profile picture */
     .profile-section {
@@ -49,13 +47,15 @@
             <!-- Display uploaded image or placeholder image -->
             @if (!string.IsNullOrEmpty(Model.image.img))
             {
-                <img src="data:image/jpeg;base64,@Model.image.img" >
+                <img src="data:image/jpeg;base64,@Model.image.img">
             }
         </label>
         <div>
             <input type="file" name="profilePicture" id="profile-picture-upload" accept="image/*">
         </div>
     </div>
+
+    <input type="hidden" name="removeImageFlag" id="remove-image-flag" value="false">
 
     <div class="row mb-3">
         <label class="col-sm-3 col-form-label">Name</label>
@@ -181,6 +181,10 @@
     <div class="row mb-3">
         <div class="offset-sm-3 col-sm-3 d-grid">
             <button type="submit" class="btn btn-primary">Submit</button>
+            @if (!string.IsNullOrEmpty(Model.image.img))
+            {
+            <button type="button" class="btn btn-danger" title="Then submit" onclick="document.getElementById('remove-image-flag').value = 'true'; document.getElementById('imageForm').submit();">Remove Image</button>
+            }
         </div>
         <div class="offset-sm-3 d-grid">
             <a class="btn btn-outline-primary" href="/Clients/ClientList" role="button">Cancel</a>
