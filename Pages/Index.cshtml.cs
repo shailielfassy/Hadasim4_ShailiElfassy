@@ -42,9 +42,8 @@ namespace Hadasim4._0Ex1.Pages
 
                     //Retrieve the number of active patients for each date within the last 30 days
                     string sql = "SELECT date_column, COUNT(*) AS active_patients FROM( SELECT client_id, positiveTestDate AS date_column FROM Covid " +
-                    "WHERE positiveTestDate IS NOT NULL AND recoveryDate IS NULL UNION ALL SELECT client_id, recoveryDate AS date_column FROM Covid " +
+                    "WHERE positiveTestDate IS NOT NULL AND positiveTestDate >= DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND recoveryDate IS NULL UNION ALL SELECT client_id, recoveryDate AS date_column FROM Covid " +
                     "WHERE recoveryDate IS NOT NULL AND recoveryDate >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)) AS subquery GROUP BY date_column ORDER BY date_column;";
-
 
                     using (MySqlCommand command = new MySqlCommand(sql, connection))
                     {

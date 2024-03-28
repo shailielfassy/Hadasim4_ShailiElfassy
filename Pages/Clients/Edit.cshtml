@@ -44,12 +44,20 @@
             <h4>@Model.clientInformation.id</h4>
         </div>
         <label for="profile-picture-upload" class="profile-picture" title="Click to upload image">
-            <!-- Display uploaded image or placeholder image -->
+            <!-- Display uploaded image -->
             @if (!string.IsNullOrEmpty(Model.image.img))
             {
                 <img src="data:image/jpeg;base64,@Model.image.img">
             }
         </label>
+        @if (!string.IsNullOrEmpty(Model.image.img))
+        {
+            <button type="button" title="Click to remove Image" onclick="document.getElementById('remove-image-flag').value = 'true'; document.getElementById('imageForm').submit();" style="background: none; border: none; padding: 0; cursor: pointer;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                    <path d="M5.5 1a.5.5 0 0 1 .5.5V2h4V1.5a.5.5 0 0 1 1 0V2h1a2 2 0 0 1 2 2v1H1V4a2 2 0 0 1 2-2h1V1.5a.5.5 0 0 1 .5-.5zM1 6v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V6H1z" />
+                </svg>
+            </button>
+        }
         <div>
             <input type="file" name="profilePicture" id="profile-picture-upload" accept="image/*">
         </div>
@@ -181,10 +189,6 @@
     <div class="row mb-3">
         <div class="offset-sm-3 col-sm-3 d-grid">
             <button type="submit" class="btn btn-primary">Submit</button>
-            @if (!string.IsNullOrEmpty(Model.image.img))
-            {
-            <button type="button" class="btn btn-danger" title="Then submit" onclick="document.getElementById('remove-image-flag').value = 'true'; document.getElementById('imageForm').submit();">Remove Image</button>
-            }
         </div>
         <div class="offset-sm-3 d-grid">
             <a class="btn btn-outline-primary" href="/Clients/ClientList" role="button">Cancel</a>
